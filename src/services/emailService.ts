@@ -4,14 +4,10 @@ import emailjs from '@emailjs/browser';
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID_CONTACT = import.meta.env.VITE_EMAILJS_TEMPLATE_CONTACT;
 const TEMPLATE_ID_BOOKING = import.meta.env.VITE_EMAILJS_TEMPLATE_BOOKING;
-const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '61u2iafAkD7DnQLbC'; // <-- Добавил дефолтный ключ, если в env нет
 
-// Инициализация — убедимся, что ключ есть перед вызовом init
-if (PUBLIC_KEY) {
-  emailjs.init(PUBLIC_KEY);
-} else {
-  console.error('EmailJS PUBLIC_KEY is missing!');
-}
+// Инициализация
+emailjs.init(PUBLIC_KEY);
 
 export interface ContactFormData {
   name: string;
@@ -36,7 +32,6 @@ export const sendContactEmail = async (formData: ContactFormData): Promise<boole
       from_name: formData.name,
       from_email: formData.email,
       message: formData.message,
-      // Убрал to_email, чтобы не было путаницы — адрес получателя задается в шаблоне EmailJS
     };
 
     await emailjs.send(SERVICE_ID, TEMPLATE_ID_CONTACT, templateParams);
@@ -58,7 +53,6 @@ export const sendBookingEmail = async (formData: BookingFormData): Promise<boole
       date: formData.date,
       time: formData.time,
       message: formData.message,
-      // Аналогично убрал to_email
     };
 
     await emailjs.send(SERVICE_ID, TEMPLATE_ID_BOOKING, templateParams);
